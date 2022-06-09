@@ -1,0 +1,44 @@
+import rhinoscriptsyntax as rs
+import VectorMethods as vm
+import random as rm
+rm.seed(seed)
+
+pos = (0,0,0)
+vec = (0,0,0)
+acc = (0,0,0)
+upperbounds = 90
+bottombounds = -90
+ptlist = []
+veclist = []
+
+class Mover:
+    def __init__(self,pos,vec,acc,upperbounds,bottombounds):
+        self.pos = pos
+        self.vec = vec
+        self.acc = acc
+        self.upperbounds = upperbounds
+        self.bottombounds = bottombounds
+        
+    def update(self):
+        self.acc = rs.VectorSubtract(target, self.pos)
+        self.pos = rs.VectorAdd(self.pos, self.vec)
+        self.vec = rs.VectorAdd(self.vec, self.acc)
+        self.vec = vm.VectorConstrain(self.vec, max=27, min=0)
+        
+    def limit(self):
+        for i in range(2):
+            if self.pos[i] > self.upperbounds:
+                self.pos[i] = self.bottombounds
+            if self.pos[i] < self.bottombounds:
+                self.pos[i] = self.upperbounds
+                
+m = Mover(pos,vec,acc,upperbounds,bottombounds)
+
+for i in range(number):
+    for t in range(time):
+        m.update()
+        m.limit()
+        pts = rs.AddPoint(m.pos)
+        vec =m.vec
+    ptlist.append(pts)
+    veclist.append(vec)
